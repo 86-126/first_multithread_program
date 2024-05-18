@@ -1,15 +1,35 @@
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+class Counter {
+    int count = 0;
+    public synchronized void increment() {
+        count++;
+    }
+}
 public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+    public static void main(String[] args) throws Exception {
+        Counter c = new Counter();
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(int i=1;i<=100;i++) {
+                    c.increment();
+                }
+            }
+        });
+        Thread t2 = new Thread((new Runnable() {
+            @Override
+            public void run() {
+                for(int i=1;i<=100;i++) {
+                    c.increment();
+}
+            }
+        }));
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        System.out.println("count: " + c.count);
     }
 }
